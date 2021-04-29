@@ -3,6 +3,7 @@ import discord
 import json
 import os
 import sys
+import time
 from code.function import *
 from code.keepalive import *
 from data.ban import banlist
@@ -20,13 +21,14 @@ async def on_ready():
 async def on_message(ctx):
   print(f'{ctx.author.id} {ctx.content.lower()}')
   if ''.join([str(x) for x in banlist])  in ctx.content.lower():
-    await function.check(ctx)
+    await function.check(ctx, ctx.author.id)
 
 try:
   from code.token import token
   client.run(token['token'])
 except:
   print(f"Uh oh! Something happened!\n\nThere was a token error!\n\nCheck code.token.token!")
+  time.sleep(3)
   exit()
 
 keepalive()
