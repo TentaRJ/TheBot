@@ -4,13 +4,15 @@ import json
 import os
 import sys
 import time
-from code.function import *
+from code.function import functions
 from code.keepalive import *
 from data.ban import banlist
+from data.help import helptxt, helptxtadmin
 from discord.ext import commands
 
-client = commands.Bot(command_prefix="?")
-client.botid = "798286010944585759"
+cmdprefix="?"
+client = commands.Bot(command_prefix=cmdprefix, intents=discord.Intents.all(), help_command=None)
+botid = "798286010944585759"
 
 @client.event
 async def on_ready():
@@ -19,9 +21,29 @@ async def on_ready():
 
 @client.event
 async def on_message(ctx):
-  print(f'{ctx.author.id} {ctx.content.lower()}')
+  print(f'{ctx.author.id} Name: {ctx.author.name}#{ctx.author.discriminator} {ctx.content.lower()}')
   if ''.join([str(x) for x in banlist])  in ctx.content.lower():
-    await function.check(ctx, ctx.author.id)
+    await functions.punish(ctx, ctx.author.id)
+  else:
+    await client.process_commands(ctx)
+
+@client.command(name="helpadmin")
+@commands.has_any_role('admin', 'staff')
+async def help(ctx):
+  await ctx.channel.send(f"Sending you a DM {ctx.author.mention}!", delete_after=5)
+  await ctx.author.send(embed=helptxtadmin)
+
+@client.command(name="help")
+async def help(ctx):
+  if isinstance(ctx.channel, discord.channel.DMChannel):
+    await ctx.channel.send(embed=helptxt)
+  else:
+    await ctx.channel.send(f"Sending you a DM {ctx.author.mention}!", delete_after=5)
+    await ctx.author.send(embed=helptxt)
+
+# @client.command(name="add")
+# async def add(ctx, word=''):
+#   await functions.add(ctx, word)
 
 try:
   from code.token import token
