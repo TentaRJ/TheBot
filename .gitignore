@@ -1,5 +1,3 @@
 token.py
 data.json
-poetry.lock
-pyproject.toml
 *.pyc
