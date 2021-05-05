@@ -25,5 +25,3 @@ class functions:
       wordfile.write(y)
       wordfile.close()
       await ctx.channel.send(f'`Added!`')
-
-      
